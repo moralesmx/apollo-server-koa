@@ -1,0 +1,27 @@
+{
+  "name": "apollo-server-koa",
+  "version": "1.0.0",
+  "description": "Apollo GraphQL Server for Koa, a less oppinionated approach, use your own routing, cors and body parsing middleware.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "author": {
+    "name": "Luis Angel Morales Romo",
+    "email": "luis@insist.com.mx",
+    "url": "https://github.com/moralesmx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moralesmx/apollo-server-koa"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@types/koa": "^2.11.6",
+    "apollo-server-core": "^2.18.2"
+  }
+}
