@@ -17,7 +17,7 @@ function isHttpQueryError(error) {
 }
 class ApolloServerKoa extends apollo_server_core_1.ApolloServerBase {
     constructor(config) {
-        super(Object.assign(Object.assign({}, config), { playground: false, context: ({ ctx }) => config.context(ctx) }));
+        super(Object.assign(Object.assign({}, config), { playground: false }));
         this.supportsUploads = () => true;
         this.supportsSubscriptions = () => true;
         this.started = this.willStart();
@@ -42,7 +42,7 @@ class ApolloServerKoa extends apollo_server_core_1.ApolloServerBase {
                     query: ctx.request.method === 'POST' ? ctx.request.body : ctx.request.query,
                     method: ctx.request.method,
                     request: apollo_server_core_1.convertNodeHttpToRequest(ctx.req),
-                    options: yield this.graphQLServerOptions({ ctx }),
+                    options: yield this.graphQLServerOptions(ctx),
                 });
                 ctx.response.set(responseInit.headers || {});
                 ctx.response.body = graphqlResponse;
