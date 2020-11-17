@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "author": {
     "name": "Luis Angel Morales Romo",
