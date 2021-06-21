@@ -1,5 +1,4 @@
 import { ApolloServerBase, Config, ContextFunction, convertNodeHttpToRequest, formatApolloErrors, HttpQueryError, runHttpQuery } from "apollo-server-core";
-import { processRequest } from 'graphql-upload';
 import type { Middleware, ParameterizedContext } from "koa";
 
 declare module 'koa' {
@@ -35,19 +34,6 @@ export class ApolloServerKoa<KoaContext extends ParameterizedContext, GraphqlCon
 
   private middleware: Middleware = async ctx => {
     await this.started;
-    if (ctx.request.is('multipart/form-data')) {
-      try {
-        ctx.request.body = await processRequest(ctx.req, ctx.res, this.uploadsConfig);
-      } catch (error) {
-        if (error.status && error.expose) {
-          ctx.response.status = error.status;
-        }
-        throw formatApolloErrors([error], {
-          formatter: this.requestOptions.formatError,
-          debug: this.requestOptions.debug,
-        });
-      }
-    }
     try {
       const { graphqlResponse, responseInit } = await runHttpQuery([ctx], {
         query: ctx.request.method === 'POST' ? ctx.request.body : ctx.request.query,

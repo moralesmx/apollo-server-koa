@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApolloServerKoa = void 0;
 const apollo_server_core_1 = require("apollo-server-core");
-const graphql_upload_1 = require("graphql-upload");
 function isHttpQueryError(error) {
     return error.name === 'HttpQueryError';
 }
@@ -23,20 +22,6 @@ class ApolloServerKoa extends apollo_server_core_1.ApolloServerBase {
         this.started = this.willStart();
         this.middleware = (ctx) => __awaiter(this, void 0, void 0, function* () {
             yield this.started;
-            if (ctx.request.is('multipart/form-data')) {
-                try {
-                    ctx.request.body = yield graphql_upload_1.processRequest(ctx.req, ctx.res, this.uploadsConfig);
-                }
-                catch (error) {
-                    if (error.status && error.expose) {
-                        ctx.response.status = error.status;
-                    }
-                    throw apollo_server_core_1.formatApolloErrors([error], {
-                        formatter: this.requestOptions.formatError,
-                        debug: this.requestOptions.debug,
-                    });
-                }
-            }
             try {
                 const { graphqlResponse, responseInit } = yield apollo_server_core_1.runHttpQuery([ctx], {
                     query: ctx.request.method === 'POST' ? ctx.request.body : ctx.request.query,
