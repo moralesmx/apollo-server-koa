@@ -11,29 +11,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApolloServerKoa = void 0;
 const apollo_server_core_1 = require("apollo-server-core");
-function isHttpQueryError(error) {
-    return error.name === 'HttpQueryError';
-}
 class ApolloServerKoa extends apollo_server_core_1.ApolloServerBase {
     constructor(config) {
-        super(Object.assign(Object.assign({}, config), { playground: false }));
-        this.supportsUploads = () => true;
-        this.supportsSubscriptions = () => true;
-        this.started = this.willStart();
-        this.middleware = (ctx) => __awaiter(this, void 0, void 0, function* () {
-            yield this.started;
+        super(config);
+    }
+    getMiddleware() {
+        return (ctx) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { graphqlResponse, responseInit } = yield apollo_server_core_1.runHttpQuery([ctx], {
+                const { graphqlResponse, responseInit } = yield (0, apollo_server_core_1.runHttpQuery)([ctx], {
                     query: ctx.request.method === 'POST' ? ctx.request.body : ctx.request.query,
                     method: ctx.request.method,
-                    request: apollo_server_core_1.convertNodeHttpToRequest(ctx.req),
+                    request: (0, apollo_server_core_1.convertNodeHttpToRequest)(ctx.req),
                     options: yield this.graphQLServerOptions(ctx),
                 });
                 ctx.response.set(responseInit.headers || {});
                 ctx.response.body = graphqlResponse;
+                ctx.response.status = responseInit.status || 200;
             }
             catch (error) {
-                if (!isHttpQueryError(error)) {
+                if (!(0, apollo_server_core_1.isHttpQueryError)(error)) {
                     throw error;
                 }
                 ctx.response.set(error.headers || {});
@@ -41,9 +37,6 @@ class ApolloServerKoa extends apollo_server_core_1.ApolloServerBase {
                 ctx.response.status = error.statusCode;
             }
         });
-    }
-    getMiddleware() {
-        return this.middleware;
     }
 }
 exports.ApolloServerKoa = ApolloServerKoa;
